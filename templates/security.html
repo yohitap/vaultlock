@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Security Center · VaultLock{% endblock %}
+{% block content %}
+<div class="hero-row">
+    <div>
+        <div class="eyebrow">SECURITY CENTER</div>
+        <h1>Find weak points.</h1>
+        <p class="muted">VaultLock checks your saved credentials for common hygiene problems.</p>
+    </div>
+</div>
+
+<section class="security-grid">
+    <div class="big-score">
+        <span class="label">SECURITY SCORE</span>
+        <strong>{{ health.score }}</strong>
+        <p>/100</p>
+    </div>
+    <div class="issue-card">
+        <span>Weak passwords</span>
+        <strong>{{ health.weak }}</strong>
+        <p>Low complexity credentials.</p>
+    </div>
+    <div class="issue-card">
+        <span>Password reuse</span>
+        <strong>{{ health.reused }}</strong>
+        <p>Accounts sharing a password.</p>
+    </div>
+    <div class="issue-card">
+        <span>Old passwords</span>
+        <strong>{{ health.old }}</strong>
+        <p>Not changed for 180+ days.</p>
+    </div>
+</section>
+
+<div class="section-heading">
+    <h2>Security audit log</h2>
+    <p class="muted">Recent vault activity.</p>
+</div>
+
+<div class="audit">
+{% for row in audit %}
+    <div class="audit-row">
+        <span class="audit-action">{{ row.action }}</span>
+        <span>{{ row.details }}</span>
+        <small>{{ row.created_at[:19].replace('T', ' ') }} UTC</small>
+    </div>
+{% else %}
+    <p class="muted">No audit events yet.</p>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Unlock Vault · VaultLock{% endblock %}
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-card">
+        <div class="eyebrow">SECURE CREDENTIAL VAULT</div>
+        <h1>Welcome back.</h1>
+        <p class="muted">Unlock your encrypted credential vault.</p>
+        <form method="post">
+            <label>Username</label>
+            <input name="username" autocomplete="username" required>
+
+            <label>Master password</label>
+            <input type="password" name="master_password" autocomplete="current-password" required>
+
+            <button class="primary full">Unlock Vault</button>
+        </form>
+        <p class="switch">New here? <a href="{{ url_for('register') }}">Create a vault</a></p>
+    </div>
+</section>
+{% endblock %}

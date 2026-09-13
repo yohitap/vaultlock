@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if entry else 'Add' }} Credential · VaultLock{% endblock %}
+{% block content %}
+<div class="form-shell">
+    <div class="hero-row">
+        <div>
+            <div class="eyebrow">{{ 'EDIT CREDENTIAL' if entry else 'NEW CREDENTIAL' }}</div>
+            <h1>{{ 'Update credential' if entry else 'Add a credential' }}</h1>
+        </div>
+    </div>
+
+    <form class="form-card" method="post">
+        <div class="two-col">
+            <div>
+                <label>Title</label>
+                <input name="title" value="{{ entry.title if entry else '' }}" placeholder="GitHub" required>
+            </div>
+            <div>
+                <label>Category</label>
+                <select name="category">
+                    {% for cat in ['Social','Work','Finance','Education','Development','Other'] %}
+                    <option {% if entry and entry.category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <label>Username / email</label>
+        <input name="username" value="{{ entry.username if entry else '' }}" autocomplete="off">
+
+        <label>Password</label>
+        <div class="password-row">
+            <input id="password" type="password" name="password" value="{{ entry.password if entry else '' }}" autocomplete="new-password" required>
+            <button type="button" class="secondary" onclick="togglePassword()">Show</button>
+            <button type="button" class="secondary" onclick="generatePassword()">Generate</button>
+        </div>
+        <div id="generatorHint" class="hint">Use Generate for a cryptographically secure random password.</div>
+
+        <label>Website</label>
+        <input name="website" value="{{ entry.website if entry else '' }}" placeholder="https://example.com">
+
+        <label>Notes</label>
+        <textarea name="notes" rows="5" placeholder="Recovery instructions, account purpose, etc.">{{ entry.notes if entry else '' }}</textarea>
+
+        <div class="form-actions">
+            <a class="secondary button-link" href="{{ url_for('dashboard') }}">Cancel</a>
+            <button class="primary">{{ 'Save changes' if entry else 'Save credential' }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function generatePassword() {
+    const response = await fetch("{{ url_for('generate_password') }}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({length: 22})
+    });
+    const data = await response.json();
+    document.getElementById("password").value = data.password;
+    document.getElementById("password").type = "text";
+}
+function togglePassword() {
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+{% endblock %}

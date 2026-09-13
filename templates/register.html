@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Create Vault · VaultLock{% endblock %}
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-card">
+        <div class="eyebrow">CREATE YOUR VAULT</div>
+        <h1>One password. One vault.</h1>
+        <p class="muted">Use a strong master password. It protects access to all saved credentials.</p>
+        <form method="post">
+            <label>Username</label>
+            <input name="username" autocomplete="username" required>
+
+            <label>Master password</label>
+            <input id="master" type="password" name="master_password" autocomplete="new-password" required>
+            <div class="hint">12+ characters, uppercase, lowercase, number and symbol.</div>
+
+            <button class="primary full">Create Vault</button>
+        </form>
+        <p class="switch">Already have a vault? <a href="{{ url_for('login') }}">Sign in</a></p>
+    </div>
+</section>
+{% endblock %}

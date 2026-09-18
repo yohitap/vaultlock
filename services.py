@@ -7,19 +7,16 @@ from db import get_db
 
 _KEY_CACHE = {}
 
-
 def unlock_user_key(user_id, master_password):
     
     salt = f"vaultlock-user-{user_id}".encode()
     _KEY_CACHE[user_id] = derive_key(master_password, salt)
-
 
 def get_user_key(user_id):
     key = _KEY_CACHE.get(user_id)
     if not key:
         raise PermissionError("Vault is locked. Please sign in again.")
     return key
-
 
 def record_audit(user_id, action, details=""):
     db = get_db()
@@ -28,7 +25,6 @@ def record_audit(user_id, action, details=""):
         (user_id, action, details, datetime.utcnow().isoformat())
     )
     db.commit()
-
 
 def create_entry(user_id, title, username, password, website, category, notes):
     key = get_user_key(user_id)
@@ -53,7 +49,6 @@ def create_entry(user_id, title, username, password, website, category, notes):
     db.commit()
     record_audit(user_id, "CREATE", f"Created credential: {title}")
 
-
 def decrypt_row(row, key):
     return {
         "id": row["id"],
@@ -68,7 +63,6 @@ def decrypt_row(row, key):
         "last_changed_at": row["last_changed_at"],
     }
 
-
 def list_entries(user_id):
     key = get_user_key(user_id)
     rows = get_db().execute(
@@ -76,14 +70,12 @@ def list_entries(user_id):
     ).fetchall()
     return [decrypt_row(row, key) for row in rows]
 
-
 def get_entry(user_id, entry_id):
     key = get_user_key(user_id)
     row = get_db().execute(
         "SELECT * FROM entries WHERE id = ? AND user_id = ?", (entry_id, user_id)
     ).fetchone()
     return decrypt_row(row, key) if row else None
-
 
 def update_entry(user_id, entry_id, title, username, password, website, category, notes):
     key = get_user_key(user_id)
@@ -114,7 +106,6 @@ def update_entry(user_id, entry_id, title, username, password, website, category
     record_audit(user_id, "UPDATE", f"Updated credential: {title}")
     return True
 
-
 def delete_entry(user_id, entry_id):
     db = get_db()
     row = db.execute(
@@ -128,7 +119,6 @@ def delete_entry(user_id, entry_id):
     record_audit(user_id, "DELETE", f"Deleted credential ID {entry_id}")
     return True
 
-
 def generate_secure_password(length=20):
     alphabet = string.ascii_letters + string.digits + "!@#$%^&*()-_=+"
     while True:
@@ -140,7 +130,6 @@ def generate_secure_password(length=20):
             and any(c in "!@#$%^&*()-_=+" for c in value)
         ):
             return value
-
 
 def calculate_health(entries):
     total = len(entries)
@@ -177,7 +166,6 @@ def calculate_health(entries):
         "reused": reused,
         "old": old
     }
-
 
 def get_audit_log(user_id):
     rows = get_db().execute(

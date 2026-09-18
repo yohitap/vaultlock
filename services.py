@@ -5,7 +5,6 @@ from datetime import datetime
 from crypto_utils import derive_key, encrypt_text, decrypt_text, password_score
 from db import get_db
 
-# Demo-friendly server-side key cache.
 # Do NOT treat this as a production key-management solution.
 _KEY_CACHE = {}
 

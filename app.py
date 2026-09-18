@@ -89,9 +89,6 @@ def login():
         session["user_id"] = user["id"]
         session["username"] = user["username"]
 
-        # The master password is deliberately NOT stored in the Flask session.
-        # The application uses a short-lived server-side in-memory key cache.
-        # For production, use a dedicated server-side session/key-management system.
         from services import unlock_user_key
         unlock_user_key(user["id"], master)
 

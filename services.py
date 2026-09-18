@@ -5,13 +5,11 @@ from datetime import datetime
 from crypto_utils import derive_key, encrypt_text, decrypt_text, password_score
 from db import get_db
 
-# Do NOT treat this as a production key-management solution.
 _KEY_CACHE = {}
 
 
 def unlock_user_key(user_id, master_password):
-    # A real production application should use a server-side session/key manager,
-    # memory protection, or client-side encryption. This keeps the demo simple.
+    
     salt = f"vaultlock-user-{user_id}".encode()
     _KEY_CACHE[user_id] = derive_key(master_password, salt)
 

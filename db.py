@@ -36,7 +36,6 @@ CREATE TABLE IF NOT EXISTS audit_log (
 );
 """
 
-
 def get_db():
     if "db" not in g:
         g.db = sqlite3.connect(DATABASE)
@@ -44,12 +43,10 @@ def get_db():
         g.db.execute("PRAGMA foreign_keys = ON")
     return g.db
 
-
 def close_db(exception=None):
     db = g.pop("db", None)
     if db is not None:
         db.close()
-
 
 def init_db():
     db = sqlite3.connect(DATABASE)

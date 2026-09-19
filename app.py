@@ -97,7 +97,6 @@ def login():
 
     return render_template("login.html")
 
-
 @app.route("/logout")
 def logout():
     if "user_id" in session:
@@ -105,14 +104,12 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-
 @app.route("/dashboard")
 @login_required
 def dashboard():
     entries = list_entries(session["user_id"])
     health = calculate_health(entries)
     return render_template("dashboard.html", entries=entries, health=health)
-
 
 @app.route("/entry/new", methods=["GET", "POST"])
 @login_required
@@ -136,7 +133,6 @@ def new_entry():
         return redirect(url_for("dashboard"))
 
     return render_template("entry_form.html", entry=None)
-
 
 @app.route("/entry/<int:entry_id>/edit", methods=["GET", "POST"])
 @login_required
@@ -162,14 +158,12 @@ def edit_entry(entry_id):
 
     return render_template("entry_form.html", entry=entry)
 
-
 @app.post("/entry/<int:entry_id>/delete")
 @login_required
 def remove_entry(entry_id):
     delete_entry(session["user_id"], entry_id)
     flash("Credential deleted.", "success")
     return redirect(url_for("dashboard"))
-
 
 @app.get("/api/entry/<int:entry_id>")
 @login_required
@@ -179,7 +173,6 @@ def api_entry(entry_id):
         return jsonify({"error": "Not found"}), 404
     return jsonify(entry)
 
-
 @app.get("/security")
 @login_required
 def security():
@@ -188,14 +181,12 @@ def security():
     audit = get_audit_log(session["user_id"])
     return render_template("security.html", health=health, audit=audit)
 
-
 @app.post("/api/generate-password")
 @login_required
 def generate_password():
     from services import generate_secure_password
     length = min(max(int(request.json.get("length", 20)), 12), 64)
     return jsonify({"password": generate_secure_password(length)})
-
 
 if __name__ == "__main__":
     app.run(debug=True)

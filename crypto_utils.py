@@ -5,8 +5,6 @@ import secrets
 import string
 
 from cryptography.fernet import Fernet, InvalidToken
-
-
 def derive_key(master_password: str, salt: bytes) -> bytes:
     """
     PBKDF2-HMAC-SHA256 derives a 32-byte key from the master password.
@@ -21,12 +19,10 @@ def derive_key(master_password: str, salt: bytes) -> bytes:
     )
     return base64.urlsafe_b64encode(raw)
 
-
 def encrypt_text(key: bytes, value: str | None) -> bytes | None:
     if value is None:
         return None
     return Fernet(key).encrypt(value.encode("utf-8"))
-
 
 def decrypt_text(key: bytes, value: bytes | None) -> str:
     if value is None:
@@ -35,7 +31,6 @@ def decrypt_text(key: bytes, value: bytes | None) -> str:
         return Fernet(key).decrypt(value).decode("utf-8")
     except InvalidToken:
         raise ValueError("Unable to decrypt vault data. The unlock key may be invalid.")
-
 
 def verify_password_strength(password: str):
     if len(password) < 12:
@@ -49,7 +44,6 @@ def verify_password_strength(password: str):
     if not re.search(r"[^A-Za-z0-9]", password):
         return False, "Master password needs at least one special character."
     return True, "Strong password."
-
 
 def password_score(password: str) -> int:
     score = 0
